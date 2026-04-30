@@ -7,7 +7,7 @@
 [![Framework](https://img.shields.io/badge/Framework-TensorFlow%2FKeras-FF6F00.svg?logo=tensorflow)](https://tensorflow.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> **A production-ready deep learning classifier** that distinguishes between airplanes, automobiles, and ships with **99.83% test accuracy** — built with MobileNetV2 transfer learning, Grad-CAM explainability, and INT8 TFLite quantization for edge deployment.
+> **A deep learning classifier** that distinguishes between airplanes, automobiles, and ships with **99.83% test accuracy** — built with MobileNetV2 transfer learning, Grad-CAM explainability, and INT8 TFLite quantization for edge deployment.
 
 **🔴 Live Demo:** [lovnishverma-airplane-car-ship-classifier.hf.space](https://lovnishverma-airplane-car-ship-classifier.hf.space)  
 **📂 GitHub:** [Airplane-Car-Ship-Classifier-with-Explainability](https://github.com/lovnishverma/Airplane-Car-Ship-Classifier-with-Explainability)
