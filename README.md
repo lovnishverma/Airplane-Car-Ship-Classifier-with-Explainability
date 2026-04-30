@@ -26,6 +26,10 @@ A robust, fine-tuned deep learning classifier capable of distinguishing between 
 
 ---
 
+<img width="1918" height="967" alt="image" src="https://github.com/user-attachments/assets/84e473fb-b4db-4070-a33c-f4422039eaf0" />
+
+---
+
 ## 🧠 Approach & Explainability
 
 *   **Model Training:** The model is built using a fine-tuned architecture (`best_finetuned.keras`), trained on a specialized Kaggle dataset. 
