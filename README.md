@@ -1,3 +1,15 @@
+---
+title: Airplane Car Ship Classifier
+emoji: ⚡
+colorFrom: pink
+colorTo: green
+sdk: gradio
+sdk_version: 6.14.0
+app_file: app.py
+pinned: false
+short_description: Airplane-Car-Ship Classifier
+---
+
 # ⚡ Airplane-Car-Ship Classifier with Explainability
 
 [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://lovnishverma-airplane-car-ship-classifier.hf.space)
@@ -9,6 +21,8 @@
 A robust, fine-tuned deep learning classifier capable of distinguishing between airplanes, cars (automobiles), and ships. This project not only delivers high-accuracy predictions but also incorporates explainability techniques to visualize model decision-making.
 
 **Live Demo:** [Hugging Face Space](https://lovnishverma-airplane-car-ship-classifier.hf.space)
+
+**GitHub Repo:** https://github.com/lovnishverma/Airplane-Car-Ship-Classifier-with-Explainability
 
 ---
 
@@ -59,7 +73,7 @@ To run this project locally, clone the repository and install the dependencies o
 
 1. **Clone the repository:**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/lovnishverma/Airplane-Car-Ship-Classifier-with-Explainability.git
    cd Airplane-Car-Ship-Classifier-with-Explainability
    ```
 
@@ -82,3 +96,4 @@ To run this project locally, clone the repository and install the dependencies o
 Project Engineer, NIELIT Ropar
 
 ⭐ *If you found this repository useful or informative, please consider giving it a star!*
+
