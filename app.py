@@ -7,33 +7,52 @@ import cv2
 model = tf.keras.models.load_model("best_finetuned.keras")
 class_names = ['airplane', 'automobile', 'ship']
 
-def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None):
-    # Create a model that maps the input image to the activations
-    # of the last conv layer as well as the output predictions
-    grad_model = tf.keras.models.Model(
-        model.inputs, [model.get_layer(last_conv_layer_name).output, model.output]
-    )
-
+def make_gradcam_heatmap(img_array, model, backbone_name):
+    # Get the backbone layer and its index in the sequence
+    backbone_layer = model.get_layer(backbone_name)
+    backbone_idx = model.layers.index(backbone_layer)
+    
     with tf.GradientTape() as tape:
-        last_conv_layer_output, preds = grad_model(img_array)
-        if pred_index is None:
-            pred_index = tf.argmax(preds[0])
+        x = img_array
+        
+        # 1. Eagerly execute layers up to the backbone
+        for layer in model.layers[:backbone_idx + 1]:
+            # Skip InputLayer as it cannot be "called" with a tensor in eager mode
+            if isinstance(layer, tf.keras.layers.InputLayer):
+                continue
+            x = layer(x)
+            
+        features = x
+        # Tell the gradient tape to track this feature map
+        tape.watch(features)
+        
+        # 2. Eagerly execute the rest of the classification head
+        for layer in model.layers[backbone_idx + 1:]:
+            x = layer(x)
+            
+        preds = x
+        pred_index = tf.argmax(preds[0])
         class_channel = preds[:, pred_index]
 
-    # Gradient of the output neuron with regard to the output feature map
-    grads = tape.gradient(class_channel, last_conv_layer_output)
-
-    # Mean intensity of the gradient over a specific feature map channel
+    # 3. Compute gradients of the predicted class with respect to the feature map
+    grads = tape.gradient(class_channel, features)
     pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-
-    # Weight the channels by "how important" they are for the prediction
-    last_conv_layer_output = last_conv_layer_output[0]
-    heatmap = last_conv_layer_output @ pooled_grads[..., tf.newaxis]
+    
+    features = features[0]
+    
+    # 4. Multiply each channel by its gradient importance
+    heatmap = features @ tf.expand_dims(pooled_grads, axis=-1)
     heatmap = tf.squeeze(heatmap)
-
-    # Normalize the heatmap between 0 & 1
-    heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
+    
+    # 5. Normalize the heatmap safely
+    heatmap = tf.maximum(heatmap, 0)
+    max_heat = tf.math.reduce_max(heatmap)
+    if max_heat == 0:
+        max_heat = 1e-10 # Prevent division by zero
+    heatmap = heatmap / max_heat
+    
     return heatmap.numpy()
+
 
 def predict(image):
     # Preprocess to match training size (128x128)
@@ -42,14 +61,10 @@ def predict(image):
     
     # Predict
     preds = model.predict(img_array)
-    pred_index = np.argmax(preds[0])
     
-    # FIX: Treat the entire MobileNetV2 backbone as the "last conv layer"
-    # because its output is the 4x4 feature map. 
-    last_conv_layer_name = 'mobilenetv2_1.00_128'
-    
-    # FIX: Pass the MAIN model to Grad-CAM, not the backbone
-    heatmap = make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index)
+    # Use our Eager-Execution Grad-CAM
+    backbone_name = 'mobilenetv2_1.00_128'
+    heatmap = make_gradcam_heatmap(img_array, model, backbone_name)
     
     # Superimpose heatmap on original image
     heatmap = cv2.resize(heatmap, (image.shape[1], image.shape[0]))
@@ -61,7 +76,7 @@ def predict(image):
     
     return {class_names[i]: float(preds[0][i]) for i in range(3)}, np.uint8(superimposed_img)
 
-# Interface setup
+
 interface = gr.Interface(
     fn=predict,
     inputs=gr.Image(),
