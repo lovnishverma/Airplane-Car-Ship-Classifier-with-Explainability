@@ -102,7 +102,7 @@ To run this project locally, clone the repository and install the dependencies o
 1. **Clone the repository:**
    
 ```bash
-   git clone [https://github.com/lovnishverma/Airplane-Car-Ship-Classifier-with-Explainability.git](https://github.com/lovnishverma/Airplane-Car-Ship-Classifier-with-Explainability.git)
+   git clone https://github.com/lovnishverma/Airplane-Car-Ship-Classifier-with-Explainability.git
    cd Airplane-Car-Ship-Classifier-with-Explainability
    ```
 
