@@ -10,4 +10,7 @@ pinned: false
 short_description: Airplane-Car-Ship Classifier
 ---
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+Live Demo: https://lovnishverma-airplane-car-ship-classifier.hf.space
+
+<img width="1918" height="967" alt="image" src="https://github.com/user-attachments/assets/5b18bc16-a5ec-4a79-8855-6c62594593f8" />
+
