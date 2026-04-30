@@ -3,6 +3,7 @@ import tensorflow as tf
 import numpy as np
 import cv2
 
+
 # Load the model
 model = tf.keras.models.load_model("best_finetuned.keras")
 class_names = ['airplane', 'automobile', 'ship']
@@ -39,23 +40,31 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None
     heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
     return heatmap.numpy()
 
+
+
 def predict(image):
-    # Preprocess
+    # Preprocess to match training size (128x128)
     img_array = tf.image.resize(image, (128, 128))
     img_array = np.expand_dims(img_array, axis=0)
     
     # Predict
     preds = model.predict(img_array)
     pred_index = np.argmax(preds[0])
-    label = class_names[pred_index]
     
-    # Generate Heatmap - 'Conv_1' is typically the last conv layer in MobileNetV2
-    heatmap = make_gradcam_heatmap(img_array, model, "Conv_1")
+    # FIX: Access the backbone layer first (found in your logs as 'mobilenetv2_1.00_128')
+    # Then target the last ReLU activation layer ('out_relu') for the heatmap
+    backbone = model.get_layer('mobilenetv2_1.00_128')[cite: 1]
+    last_conv_layer_name = "out_relu"[cite: 1]
+    
+    # Generate Heatmap using the backbone and its internal layer
+    heatmap = make_gradcam_heatmap(img_array, backbone, last_conv_layer_name)[cite: 1]
     
     # Superimpose heatmap on original image
     heatmap = cv2.resize(heatmap, (image.shape[1], image.shape[0]))
     heatmap = np.uint8(255 * heatmap)
     heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
+    
+    # Ensure heatmap and original image have the same type for math operations
     superimposed_img = heatmap * 0.4 + image
     
     return {class_names[i]: float(preds[0][i]) for i in range(3)}, np.uint8(superimposed_img)
