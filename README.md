@@ -55,6 +55,10 @@ The pipeline includes 7 documented engineering fixes applied over iterative deve
 
 The fine-tuned model achieves near-perfect, state-of-the-art results on both validation and a fully held-out test set.
 
+<img width="900" height="500" alt="demo" src="https://github.com/user-attachments/assets/5c6d674c-61c8-46ec-a8b5-d72d74624986" />
+
+
+
 | Metric | Value |
 |---|---|
 | **Validation Accuracy** | **99.65%** (Loss: 0.0184) |
