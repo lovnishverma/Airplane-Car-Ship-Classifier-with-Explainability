@@ -54,7 +54,7 @@ def predict(image):
     # FIX: Access the backbone layer first (found in your logs as 'mobilenetv2_1.00_128')
     # Then target the last ReLU activation layer ('out_relu') for the heatmap
     backbone = model.get_layer('mobilenetv2_1.00_128')
-    last_conv_layer_name = "out_relu"[cite: 1]
+    last_conv_layer_name = "out_relu"
     
     # Generate Heatmap using the backbone and its internal layer
     heatmap = make_gradcam_heatmap(img_array, backbone, last_conv_layer_name)
