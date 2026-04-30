@@ -1,4 +1,4 @@
-# Model Card — Airplane · Automobile · Ship Classifier
+# Model Card: Airplane · Automobile · Ship Classifier
 
 ## Model Details
 
@@ -14,8 +14,8 @@
 | **Model Size** | ~26 MB (Keras) · ~3.08 MB (INT8 TFLite) |
 | **License** | Apache-2.0 |
 | **Author** | Lovnish Verma, Project Engineer, NIELIT Ropar |
-| **Programme** | AIML programme in collaboration with IIT Ropar |
-| **Date** | 2025 |
+| **Programme** | NIELIT Ropar AIML programme in collaboration with IIT Ropar |
+| **Date** | 2026 |
 
 ---
 
