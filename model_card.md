@@ -12,7 +12,7 @@
 | **Input** | RGB image, resized to 128 × 128 × 3 |
 | **Output** | Softmax probability vector over 3 classes |
 | **Model Size** | ~26 MB (Keras) · ~3.08 MB (INT8 TFLite) |
-| **License** | Apache-2.0 |
+| **License** | MIT |
 | **Author** | Lovnish Verma, Project Engineer, NIELIT Ropar |
 | **Programme** | NIELIT Ropar AIML programme in collaboration with IIT Ropar |
 | **Date** | 2026 |
