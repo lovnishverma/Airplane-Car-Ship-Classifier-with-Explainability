@@ -39,7 +39,7 @@
 
 ## 🎯 Project Overview
 
-This project was built as part of the **AIML programme with IIT Ropar** and demonstrates a complete, production-grade image classification pipeline — from raw data to a deployed web app with explainability. It goes beyond a typical "train and evaluate" notebook by addressing three real-world concerns that are often ignored in academic projects:
+This project was built as part of the **NIELIT Ropar AIML programme in collaboration with IIT Ropar** and demonstrates a complete, production-grade image classification pipeline — from raw data to a deployed web app with explainability. It goes beyond a typical "train and evaluate" notebook by addressing three real-world concerns that are often ignored in academic projects:
 
 | Concern | Solution |
 |---|---|
