@@ -32,40 +32,40 @@ A highly optimized, production-ready deep learning classifier built to distingui
 
 ## 🧠 Methodology: How It Works & Why
 
-This model uses **Transfer Learning** with a `MobileNetV2` backbone, optimized for mobile and edge devices[cite: 1]. To achieve near-perfect accuracy without overfitting, the training is split into two strategic phases.
+This model uses **Transfer Learning** with a `MobileNetV2` backbone, optimized for mobile and edge devices. To achieve near-perfect accuracy without overfitting, the training is split into two strategic phases.
 
 ### 1. The Two-Phase Training Strategy
 
 **Phase 1: Feature Extraction (Frozen Backbone)**
-*   **How:** We attach a new, randomly initialized classification head (Dense layers + Dropout) to the `MobileNetV2` backbone[cite: 1]. The entire backbone is strictly frozen[cite: 1].
-*   **Why:** If we trained the whole network immediately, the massive initial errors from the random head would propagate large gradients backward, violently destroying the delicate, pre-trained feature maps MobileNetV2 learned from ImageNet[cite: 1]. Freezing the base allows the new head to gently "warm up" and learn how to interpret the existing features.
+*   **How:** We attach a new, randomly initialized classification head (Dense layers + Dropout) to the `MobileNetV2` backbone. The entire backbone is strictly frozen.
+*   **Why:** If we trained the whole network immediately, the massive initial errors from the random head would propagate large gradients backward, violently destroying the delicate, pre-trained feature maps MobileNetV2 learned from ImageNet. Freezing the base allows the new head to gently "warm up" and learn how to interpret the existing features.
 
 **Phase 2: Fine-Tuning (Unfreezing Top Layers)**
-*   **How:** Once the head is capable, we unfreeze the top 30 layers of the `MobileNetV2` backbone[cite: 1]. We apply a `CosineDecayRestarts` learning rate schedule directly within the Adam optimizer to smoothly adjust weights[cite: 1].
-*   **Why:** Unfreezing the top layers allows the model to adapt its high-level, abstract feature detectors specifically to the geometries of planes, cars, and ships, drastically pushing the accuracy higher without wrecking foundational edge/texture detectors[cite: 1].
+*   **How:** Once the head is capable, we unfreeze the top 30 layers of the `MobileNetV2` backbone. We apply a `CosineDecayRestarts` learning rate schedule directly within the Adam optimizer to smoothly adjust weights.
+*   **Why:** Unfreezing the top layers allows the model to adapt its high-level, abstract feature detectors specifically to the geometries of planes, cars, and ships, drastically pushing the accuracy higher without wrecking foundational edge/texture detectors.
 
 ### 2. Pipeline & Engineering Improvements
 Several robust engineering fixes were implemented in this iteration to ensure stability and performance:
-*   **Stable MixUp / Batching:** Added `drop_remainder=True` to the `tf.data` pipelines to prevent unequal-length batches at the end of epochs, which silently breaks shape-dependent operations[cite: 1].
-*   **Domain-Specific Augmentation:** Applied horizontal-only `RandomFlip` (along with rotation, zoom, and contrast tweaks), because vertical flipping (upside-down ships/cars) creates unrealistic domain data[cite: 1].
-*   **Resilient Architecture Referencing:** The base model is extracted functionally by its explicit name (`mobilenetv2_1.00_128`) rather than relying on fragile positional indexing[cite: 1].
+*   **Stable MixUp / Batching:** Added `drop_remainder=True` to the `tf.data` pipelines to prevent unequal-length batches at the end of epochs, which silently breaks shape-dependent operations.
+*   **Domain-Specific Augmentation:** Applied horizontal-only `RandomFlip` (along with rotation, zoom, and contrast tweaks), because vertical flipping (upside-down ships/cars) creates unrealistic domain data.
+*   **Resilient Architecture Referencing:** The base model is extracted functionally by its explicit name (`mobilenetv2_1.00_128`) rather than relying on fragile positional indexing.
 
 ---
 
 ## 🔍 Model Interpretability (Grad-CAM)
 
-Deep learning models shouldn't be "black boxes"[cite: 1]. To ensure the model is learning the right concepts (and not just memorizing background artifacts like the sky or ocean), we use **Gradient-weighted Class Activation Mapping (Grad-CAM)**[cite: 1].
+Deep learning models shouldn't be "black boxes". To ensure the model is learning the right concepts (and not just memorizing background artifacts like the sky or ocean), we use **Gradient-weighted Class Activation Mapping (Grad-CAM)**.
 
-*   **How it works:** We extract the gradients of the target class with respect to the last convolutional feature map (`out_relu`) in the MobileNetV2 backbone[cite: 1]. This produces a coarse localization heatmap[cite: 1].
-*   **Result:** You can physically see the model looking at the wings of an airplane, the wheels of a car, or the hull of a ship to make its decision[cite: 1].
+*   **How it works:** We extract the gradients of the target class with respect to the last convolutional feature map (`out_relu`) in the MobileNetV2 backbone. This produces a coarse localization heatmap.
+*   **Result:** You can physically see the model looking at the wings of an airplane, the wheels of a car, or the hull of a ship to make its decision.
 
 ---
 
 ## 🚀 Edge Deployment: INT8 TFLite Export
 
-To make the model viable for mobile apps and IoT devices, it is exported to TensorFlow Lite with **Full INT8 Quantization**[cite: 1].
-*   A `representative_dataset_gen` function feeds 50 calibration batches of validation data into the converter[cite: 1].
-*   This estimates the proper scale and zero-point for 8-bit integer quantization[cite: 1].
+To make the model viable for mobile apps and IoT devices, it is exported to TensorFlow Lite with **Full INT8 Quantization**.
+*   A `representative_dataset_gen` function feeds 50 calibration batches of validation data into the converter.
+*   This estimates the proper scale and zero-point for 8-bit integer quantization.
 *   **Result:** A highly compressed model (`model_int8.tflite`) that takes up only **~3.08 MB** of space, maintaining float32 I/O for deployment flexibility while achieving ~98.8% sanity-check accuracy natively on CPU[cite: 1, 2].
 
 ---
