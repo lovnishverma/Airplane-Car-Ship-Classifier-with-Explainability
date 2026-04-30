@@ -71,8 +71,11 @@ def predict(image):
     heatmap = np.uint8(255 * heatmap)
     heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
     
-    # Combine heatmap with original image (40% heatmap, 60% original)
-    superimposed_img = heatmap * 0.4 + image
+    # Convert OpenCV's BGR heatmap to RGB <---
+    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+    
+    # Balance the weights and clip the values to prevent overflow <---
+    superimposed_img = np.clip(heatmap * 0.4 + image * 0.6, 0, 255)
     
     return {class_names[i]: float(preds[0][i]) for i in range(3)}, np.uint8(superimposed_img)
 
